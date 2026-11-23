@@ -1,0 +1,29 @@
+{% extends "email_generator/base.html" %}
+{% block title %}{% if item %}Editar artículo{% else %}Nuevo artículo{% endif %} · {{ brand_name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h2>{% if item %}Editar «{{ item.name }}»{% else %}Nuevo artículo del catálogo{% endif %}</h2>
+    <p>Defina el precio referencial y las familias compatibles con el repuesto o servicio.</p>
+  </div>
+  <a class="btn btn-ghost" href="{% url 'email_generator:management' %}">Volver al panel</a>
+</div>
+
+<form method="post" class="card form-card">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="form-alert">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}
+    <div class="field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<small class="help">{{ field.help_text }}</small>{% endif %}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <a class="btn btn-ghost" href="{% url 'email_generator:management' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,119 @@
+[
+  {
+    "model": "email_generator.equipmentfamily",
+    "pk": 1,
+    "fields": {
+      "name": "Bio500/V10",
+      "prefix": "V10",
+      "allows_quotes": true,
+      "support_channel": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.equipmentfamily",
+    "pk": 2,
+    "fields": {
+      "name": "Futronic",
+      "prefix": "FP-",
+      "allows_quotes": true,
+      "support_channel": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.equipmentfamily",
+    "pk": 3,
+    "fields": {
+      "name": "SZZT",
+      "prefix": "G62",
+      "allows_quotes": true,
+      "support_channel": "",
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 1,
+    "fields": {
+      "name": "Lector biométrico",
+      "price": "80.00",
+      "is_mandatory_base": false,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 2,
+    "fields": {
+      "name": "Pantalla",
+      "price": "80.00",
+      "is_mandatory_base": false,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 3,
+    "fields": {
+      "name": "Pin",
+      "price": "20.00",
+      "is_mandatory_base": false,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 4,
+    "fields": {
+      "name": "Botón",
+      "price": "10.00",
+      "is_mandatory_base": false,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 5,
+    "fields": {
+      "name": "Mantenimiento menor",
+      "price": "10.00",
+      "is_mandatory_base": false,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "email_generator.itemcatalog",
+    "pk": 6,
+    "fields": {
+      "name": "Reemplazo de partes y piezas de dispositivos biométricos",
+      "price": "10.00",
+      "is_mandatory_base": true,
+      "is_active": true,
+      "allowed_families": [1, 2, 3],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  }
+]

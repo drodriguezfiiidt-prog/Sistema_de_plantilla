@@ -1,0 +1,40 @@
+{% extends "email_generator/base.html" %}
+{% block title %}Ticket #{{ ticket.ticket_number }} · {{ brand_name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h2>Ticket #{{ ticket.ticket_number }}</h2>
+    <p>
+      Serial {{ ticket.serial_number }}
+      · {{ ticket.family.name|default:"Sin familia" }}
+      · Garantía {{ ticket.get_warranty_status_display|lower }}
+    </p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{% url 'email_generator:ticket_docx' ticket.pk %}">
+      Descargar Word
+    </a>
+    <a class="btn btn-ghost" href="{% url 'email_generator:history' %}">Volver al historial</a>
+  </div>
+</div>
+
+<section class="card">
+  <h3>Datos de la evaluación</h3>
+  <dl class="detail-list">
+    <dt>Registrado</dt><dd>{{ ticket.created_at|date:"d/m/Y H:i" }}</dd>
+    <dt>Familia</dt><dd>{{ ticket.family.name|default:"No determinada" }}</dd>
+    <dt>Garantía</dt><dd>{{ ticket.get_warranty_status_display }}</dd>
+    <dt>Fallas y repuestos</dt><dd>{{ ticket.items_summary|default:"—" }}</dd>
+    <dt>Total referencial</dt><dd>${{ ticket.total_reference }}</dd>
+    <dt>Registrado por</dt><dd>{{ ticket.created_by|default:"—" }}</dd>
+    <dt>Informe técnico</dt><dd>{{ ticket.technical_report|default:"Sin observaciones."|linebreaksbr }}</dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h3>Documento institucional</h3>
+  <p class="saved-note"><strong>Asunto:</strong> {{ document.subject }}</p>
+  {% include "email_generator/partials/document.html" with document=document %}
+</section>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "email_generator/base.html" %}
+{% block title %}Historial · {{ brand_name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h2>Historial de evaluaciones</h2>
+    <p>{{ total_count }} registro(s) guardado(s) en GestioBioV3.</p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'email_generator:generator' %}">Nuevo diagnóstico</a>
+</div>
+
+<form class="card filter-bar" method="get">
+  <input
+    type="search"
+    name="q"
+    value="{{ query }}"
+    placeholder="Ticket o serial"
+    class="form-input"
+  >
+  <select name="garantia" class="form-input">
+    <option value="">Todas las garantías</option>
+    {% for value, label in warranty_choices %}
+      <option value="{{ value }}" {% if value == warranty %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select name="familia" class="form-input">
+    <option value="">Todas las familias</option>
+    {% for item in families %}
+      <option value="{{ item.pk }}" {% if item.pk|stringformat:"s" == family_id %}selected{% endif %}>
+        {{ item.name }}
+      </option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-primary" type="submit">Filtrar</button>
+</form>
+
+<div class="card table-card">
+  {% if tickets %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>Serial</th>
+          <th>Familia</th>
+          <th>Garantía</th>
+          <th>Fallas</th>
+          <th>Total</th>
+          <th>Creado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in tickets %}
+          <tr>
+            <td><a href="{{ ticket.get_absolute_url }}">#{{ ticket.ticket_number }}</a></td>
+            <td>{{ ticket.serial_number }}</td>
+            <td>{{ ticket.family.name|default:"—" }}</td>
+            <td>
+              <span class="badge {% if ticket.warranty_status == 'Vigente' %}badge-success{% elif ticket.warranty_status == 'Invalidada' %}badge-danger{% else %}badge-warning{% endif %}">
+                {{ ticket.get_warranty_status_display }}
+              </span>
+            </td>
+            <td class="cell-wrap">{{ ticket.items_summary|default:"—" }}</td>
+            <td>${{ ticket.total_reference }}</td>
+            <td>{{ ticket.created_at|date:"d/m/Y H:i" }}</td>
+            <td>
+              <a class="btn btn-ghost btn-sm" href="{% url 'email_generator:ticket_docx' ticket.pk %}">
+                Word
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty-state">No hay evaluaciones registradas todavía.</p>
+  {% endif %}
+</div>
+{% endblock %}

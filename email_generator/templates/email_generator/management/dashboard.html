@@ -1,0 +1,129 @@
+{% extends "email_generator/base.html" %}
+{% block title %}Gestión · {{ brand_name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h2>Gestión de repuestos y precios</h2>
+    <p>Catálogo dinámico con precios referenciales en USD y compatibilidad por familia.</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{% url 'email_generator:catalog_create' %}">Nuevo artículo</a>
+    <a class="btn btn-ghost" href="{% url 'email_generator:family_create' %}">Nueva familia</a>
+    <a class="btn btn-ghost" href="/admin/">Django Admin</a>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card"><span>{{ stats.items }}</span><p>Artículos</p></div>
+  <div class="stat-card"><span>{{ stats.active_items }}</span><p>Habilitados</p></div>
+  <div class="stat-card"><span>{{ stats.families }}</span><p>Familias</p></div>
+  <div class="stat-card"><span>{{ stats.tickets }}</span><p>Diagnósticos</p></div>
+</div>
+
+<section class="card table-card">
+  <h3>Catálogo de repuestos y servicios</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Artículo</th>
+        <th>Precio (USD)</th>
+        <th>Partida base</th>
+        <th>Estado</th>
+        <th>Familias compatibles</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        <tr class="{% if not item.is_active %}row-muted{% endif %}">
+          <td>{{ item.name }}</td>
+          <td>
+            <form method="post" action="{% url 'email_generator:catalog_price' item.pk %}" class="inline-form">
+              {% csrf_token %}
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                name="price"
+                value="{{ item.price }}"
+                class="form-input input-price"
+                aria-label="Precio de {{ item.name }}"
+              >
+              <button type="submit" class="btn btn-ghost btn-sm">Guardar</button>
+            </form>
+          </td>
+          <td>
+            {% if item.is_mandatory_base %}
+              <span class="badge badge-info">Obligatoria</span>
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            <form method="post" action="{% url 'email_generator:catalog_toggle' item.pk %}">
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="badge {% if item.is_active %}badge-success{% else %}badge-danger{% endif %}"
+              >
+                {% if item.is_active %}Habilitado{% else %}Deshabilitado{% endif %}
+              </button>
+            </form>
+          </td>
+          <td class="cell-wrap">
+            {% for family in item.allowed_families.all %}
+              <span class="chip">{{ family.name }}</span>
+            {% empty %}—{% endfor %}
+          </td>
+          <td>
+            <a class="btn btn-ghost btn-sm" href="{% url 'email_generator:catalog_edit' item.pk %}">
+              Editar
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="empty-state">El catálogo está vacío.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card table-card">
+  <h3>Familias de equipos</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Familia</th>
+        <th>Prefijo</th>
+        <th>Cotización</th>
+        <th>Canal administrativo</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for family in families %}
+        <tr>
+          <td>{{ family.name }}</td>
+          <td><code>{{ family.prefix }}</code></td>
+          <td>{% if family.allows_quotes %}Sí{% else %}No{% endif %}</td>
+          <td>{{ family.support_channel|default:"—" }}</td>
+          <td>
+            {% if family.is_active %}
+              <span class="badge badge-success">Activa</span>
+            {% else %}
+              <span class="badge badge-danger">Inactiva</span>
+            {% endif %}
+          </td>
+          <td>
+            <a class="btn btn-ghost btn-sm" href="{% url 'email_generator:family_edit' family.pk %}">
+              Editar
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="empty-state">No hay familias registradas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

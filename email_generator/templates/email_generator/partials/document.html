@@ -1,0 +1,30 @@
+<article class="document">
+  {% for block in document.blocks %}
+    {% if block.kind == "table" %}
+      <table class="quote-table">
+        <thead>
+          <tr>
+            {% for column in block.columns %}<th>{{ column }}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in block.rows %}
+            <tr>
+              {% for cell in row %}<td>{{ cell }}</td>{% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% elif block.kind == "bullets" %}
+      <ul class="document-bullets">
+        {% for item in block.items %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+    {% elif block.kind == "heading" %}
+      <h4 class="document-heading">{{ block.text }}</h4>
+    {% else %}
+      <p class="document-paragraph{% if block.bold %} is-bold{% endif %}">
+        {{ block.text|linebreaksbr }}
+      </p>
+    {% endif %}
+  {% endfor %}
+</article>

@@ -1,0 +1,11 @@
+# Base SQLite y respaldos locales
+storage/*.sqlite
+storage/*.sqlite-*
+storage/*.db
+storage/*.log
+
+# Logs
+*.log
+
+# Configuracion local opcional
+config.local.php

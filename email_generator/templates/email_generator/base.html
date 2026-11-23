@@ -1,0 +1,45 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ brand_name }} · {{ brand_subtitle }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">GB</span>
+      <div class="brand-text">
+        <h1>{{ brand_name }}</h1>
+        <p>{{ brand_subtitle }} · {{ company }}</p>
+      </div>
+    </div>
+    <nav class="app-nav">
+      <a href="{% url 'email_generator:generator' %}">Generador</a>
+      <a href="{% url 'email_generator:history' %}">Historial</a>
+      <a href="{% url 'email_generator:management' %}">Gestión</a>
+      <a href="/admin/">Administración</a>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div class="flash-stack">
+      {% for message in messages %}
+        <div class="flash flash-{{ message.tags|default:'info' }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="app-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="app-footer">
+    © 2026 {{ brand_name }} by Rafael Escalona
+  </footer>
+
+  <script src="{% static 'js/app.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

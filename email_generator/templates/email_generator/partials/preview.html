@@ -1,0 +1,72 @@
+{% if result %}
+  <div class="preview-toolbar">
+    <span class="badge badge-{{ result.report.tone }}">{{ result.report.label }}</span>
+    <div class="preview-actions">
+      <button type="button" class="btn btn-ghost" data-copy-preview>
+        Copiar al portapapeles
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-download-docx
+        data-url="{% url 'email_generator:download_docx' %}"
+      >
+        Descargar Word (.docx)
+      </button>
+    </div>
+  </div>
+
+  <div class="preview-meta">
+    <p><strong>Asunto:</strong> {{ result.document.subject }}</p>
+    {% if result.document.family_name %}
+      <p>
+        <strong>Modelo:</strong> {{ result.document.family_name }}
+        · <strong>Serial:</strong> {{ result.document.serial_number }}
+        · <strong>Garantía:</strong> {{ result.document.warranty_status }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div id="preview-document">
+    {% include "email_generator/partials/document.html" with document=result.document %}
+  </div>
+
+  {% if result.quote.has_lines %}
+    <p class="preview-total">Total referencial: <strong>${{ result.quote.total }}</strong></p>
+  {% endif %}
+
+  {% if result.report.errors or result.report.warnings or result.report.infos %}
+    <details class="preview-report">
+      <summary>Validaciones del documento ({{ result.report.errors|length }} errores)</summary>
+      {% if result.report.errors %}
+        <ul class="report-list report-errors">
+          {% for item in result.report.errors %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+      {% if result.report.warnings %}
+        <ul class="report-list report-warnings">
+          {% for item in result.report.warnings %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+      {% if result.report.infos %}
+        <ul class="report-list report-infos">
+          {% for item in result.report.infos %}<li>{{ item }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </details>
+  {% endif %}
+
+  <textarea id="preview-text" class="visually-hidden" readonly>{{ result.document.plain_text }}</textarea>
+{% else %}
+  <div class="preview-empty">
+    <h3>Vista previa del correo</h3>
+    <p>
+      Complete el número de ticket, el serial y las fallas detectadas para ver
+      el diagnóstico institucional en tiempo real.
+    </p>
+    <p class="preview-hint">
+      El serial autodetecta la familia del equipo (por ejemplo, un serial que
+      inicia con <code>V10</code> corresponde a Bio500).
+    </p>
+  </div>
+{% endif %}

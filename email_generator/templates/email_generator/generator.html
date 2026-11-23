@@ -1,0 +1,99 @@
+{% extends "email_generator/base.html" %}
+{% block title %}Generador · {{ brand_name }}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <h2>Asistente de diagnóstico técnico</h2>
+    <p>Parametrice el ticket, el equipo y las fallas para generar el correo institucional y su Word.</p>
+  </div>
+  <a class="btn btn-ghost" href="{% url 'email_generator:history' %}">Ver historial</a>
+</div>
+
+<div class="layout-two-columns">
+  <section class="card form-card">
+    <h3>Datos del ticket</h3>
+    <form
+      method="post"
+      id="diagnostic-form"
+      data-preview-url="{% url 'email_generator:preview' %}"
+      data-context-url="{% url 'email_generator:api_context' %}"
+    >
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.ticket_number.id_for_label }}">{{ form.ticket_number.label }}</label>
+        {{ form.ticket_number }}
+        {{ form.ticket_number.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.serial_number.id_for_label }}">{{ form.serial_number.label }}</label>
+        {{ form.serial_number }}
+        <small class="help">{{ form.serial_number.help_text }}</small>
+        {{ form.serial_number.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.family.id_for_label }}">{{ form.family.label }}</label>
+        {{ form.family }}
+        <div class="family-chip" id="family-chip">
+          {% if family %}
+            <strong>{{ family.name }}</strong> · prefijo {{ family.prefix }}
+            {% if not family.allows_quotes %}· sin tabla de cotización{% endif %}
+          {% else %}
+            Sin familia detectada
+          {% endif %}
+        </div>
+        {{ form.family.errors }}
+      </div>
+
+      <fieldset class="field">
+        <legend>{{ form.items.label }}</legend>
+        {{ form.items }}
+        <small class="help">
+          Solo se muestran repuestos activos y compatibles con la familia detectada.
+        </small>
+        {{ form.items.errors }}
+      </fieldset>
+
+      <div class="field">
+        <label for="{{ form.warranty_status.id_for_label }}">{{ form.warranty_status.label }}</label>
+        {{ form.warranty_status }}
+        {{ form.warranty_status.errors }}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.technical_report.id_for_label }}">{{ form.technical_report.label }}</label>
+        {{ form.technical_report }}
+        <small class="help">{{ form.technical_report.help_text }}</small>
+        {{ form.technical_report.errors }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Generar diagnóstico</button>
+        <button type="reset" class="btn btn-ghost">Limpiar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card preview-card">
+    <div class="preview-header">
+      <h3>Vista previa del documento</h3>
+      <span class="preview-live" id="preview-status">Actualización en vivo</span>
+    </div>
+    {% if ticket %}
+      <p class="saved-note">
+        Evaluación guardada.
+        <a href="{{ ticket.get_absolute_url }}">Ver registro #{{ ticket.ticket_number }}</a>
+      </p>
+    {% endif %}
+    <div id="preview-panel" class="preview-body" aria-live="polite">
+      {% include "email_generator/partials/preview.html" %}
+    </div>
+  </section>
+</div>
+{% endblock %}
